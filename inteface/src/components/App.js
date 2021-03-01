@@ -5,6 +5,29 @@ import ListAppointments from './ListAppointments';
 import SearchAppointments from './SearchAppointments';
 
 class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      myAppointments: [],
+      lastIndex: 0
+    }
+  }
+
+  componentDidMount() {
+    fetch('./data.json')
+      .then(response => response.json())
+      .then(result => {
+        const apts = result.map(item => {
+          item.aptId =this.state.lastIndex;
+          this.setState({lastIndex: this.state.lastIndex + 1})
+          return item;
+        })
+      this.setState({
+      myAppointments: apts
+      });
+    });
+  }
+
   render() {
   return (
     <main className="page bg-white" id="petratings">
@@ -14,7 +37,7 @@ class App extends Component {
             <div className="container">
               <AddAppointments />
               <SearchAppointments />
-              <ListAppointments />
+              <ListAppointments appointments={this.state.myAppointments} />
             </div>
           </div>
         </div>
